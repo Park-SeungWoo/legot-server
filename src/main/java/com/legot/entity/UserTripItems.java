@@ -16,7 +16,8 @@ import java.math.BigInteger;
 @NoArgsConstructor
 public class UserTripItems {
     @Id
-    private BigInteger userTripItemId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userTripItemId;
     @ManyToOne
     @JoinColumn(name = "user_trip_id")  // if name = reference column name, reference Column name is omissible.
     private UserTrips userTrips;

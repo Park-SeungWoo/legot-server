@@ -17,7 +17,8 @@ import java.math.BigInteger;
 @NoArgsConstructor
 public class Lodgings {
     @Id
-    private BigInteger lodgingId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long lodgingId;
     @ManyToOne
     @JoinColumn(name = "location_id")
     private Locations location;  // FK PK

@@ -17,7 +17,8 @@ import java.math.BigInteger;
 @NoArgsConstructor
 public class UserTrips {
     @Id
-    private BigInteger userTripId;  // bigint in sql = long, unsigned bigint = math.bitinteger
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userTripId;  // bigint in sql = long, unsigned bigint = math.bitinteger
     @ManyToOne
     @JoinColumn(name = "user_email")
     private Users user;  // FK

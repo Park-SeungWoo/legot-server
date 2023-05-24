@@ -2,14 +2,17 @@ package com.legot.entity;
 
 import com.legot.enums.Gender;
 import com.legot.enums.LoginType;
+import com.legot.enums.UserRole;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -19,7 +22,10 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class Users {
     @Id
-    private String userId;  // uuid as PK
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID userId;  // uuid as PK
     @Column(unique = true, nullable = false)
     // @column(nullable=false)의 경우 필드의 값에 널이 들어가있는 엔티티가 생성된 뒤에 db에 쿼리가 날라간 후에야 에러가 나와 위험하다
     // NotNull은 db에 쿼리 날리기 전에 repository에서 잘못된 entity를 저장할 때 ConstraintViolationException에러를 발생시켜 안정적인듯
@@ -34,9 +40,13 @@ public class Users {
     private String password;
     @Column(nullable = false)
     private String name;
+    @Enumerated(value = EnumType.STRING)
     private Gender gender;
     private Timestamp birth;
     private String phone;
+    @Enumerated(value = EnumType.STRING)
+    private UserRole role;
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private LoginType loginType;
 }

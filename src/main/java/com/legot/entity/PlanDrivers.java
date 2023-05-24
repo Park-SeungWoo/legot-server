@@ -16,7 +16,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class PlanDrivers {
     @Id
-    private String planDriversId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long planDriversId;
     private int transportationBudget;
     @ManyToOne
     @JoinColumn(name = "user_email")

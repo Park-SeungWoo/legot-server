@@ -21,7 +21,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class Plans {
     @Id
-    private BigInteger planId;  // PK
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long planId;  // PK
     @Id
     private int sequence;  // PK
     private boolean isLodging;  // bit in sql (default false)

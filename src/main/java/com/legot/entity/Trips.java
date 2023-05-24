@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -18,10 +19,14 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class Trips {
     @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(columnDefinition = "BINARY(16)")
     private String tripId;  // PK
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private Theme theme;
     private int days;
     private int memberCount;
