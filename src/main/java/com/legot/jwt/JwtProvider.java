@@ -5,14 +5,12 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.http.HttpRequest;
 import java.security.Key;
 import java.util.Date;
 
@@ -27,15 +25,20 @@ public class JwtProvider {
     private long accessTokenValidTime;
     @Value("${jwt.refresh-token-validity}")
     private long refreshTokenValidTime;
+    @Value("${jwt.access-token-header}")
+    private String accessHeader;
+    @Value("${jwt.refresh-token-header}")
+    private String refreshHeader;
 
     private String createToken(String email, UserRole role, Long tokenValidTime) {
-        Claims claims = Jwts.claims().setSubject(email);
+        Claims claims = Jwts.claims();
         claims.put("roles", role);
         Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
         Date now = new Date();
 
         return "bearer " + Jwts.builder()
                 .setClaims(claims)
+                .setSubject(email)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + tokenValidTime))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -59,7 +62,7 @@ public class JwtProvider {
     }
 
     public String resolveAccessToken(HttpServletRequest request) {
-        return resolveToken(request, "Authorization");
+        return resolveToken(request, accessHeader);
     }
 
     public String resolveRefreshToken(HttpServletRequest request) {
@@ -73,7 +76,7 @@ public class JwtProvider {
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
-
+            
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (MalformedJwtException e) {
             throw new MalformedJwtException("Invalid JWT", e);
